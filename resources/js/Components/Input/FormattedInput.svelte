@@ -3,7 +3,6 @@
 
     let realValue: string;
 
-
     /**
      * Heavily inspired by this [REPL](https://svelte.dev/repl/f45d38ec017749ddbcb86310d1102f82?version=3.46.4)
      * I tried to change it to the best of my abilities to be a little bit
