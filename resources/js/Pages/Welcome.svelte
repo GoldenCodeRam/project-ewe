@@ -2,10 +2,11 @@
     import Input from "../Components/Input/Input.svelte";
     import MainLayout from "../Layouts/MainLayout.svelte";
     import Tooltip from "../Components/Tooltip.svelte";
+    import ConfirmationModal from "../Components/Modal/ConfirmationModal.svelte";
+
     import { UserValidator } from "../Functions/Validation/Validation";
     import type { z } from "zod";
     import type { User } from "../Types/Types";
-    import ConfirmationModal from "../Components/Modal/ConfirmationModal.svelte";
 
     let formErrors: z.typeToFlattenedError<User> | undefined;
     let user: User = {
