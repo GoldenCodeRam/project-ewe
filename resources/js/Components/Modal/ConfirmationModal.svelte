@@ -1,44 +1,46 @@
 <script lang="ts">
-    import { fade, fly } from "svelte/transition";
-    import { createEventDispatcher } from "svelte";
-
     import PrimaryButton from "../Button/PrimaryButton.svelte";
     import SecondaryButton from "../Button/SecondaryButton.svelte";
+    import Modal from "./Modal.svelte";
 
-    const dispatch = createEventDispatcher();
+    import { createEventDispatcher } from "svelte";
 
-    export let isModalOpen = false;
+    const dispatcher = createEventDispatcher();
 
-    function close() {
-        dispatch("close");
+    export let modalTitle: string;
+
+    let modal: Modal;
+
+    export function open() {
+        modal.open();
+    }
+
+    function cancel() {
+        dispatcher("cancel");
+        modal.close();
+    }
+
+    function accept() {
+        dispatcher("accept");
+        modal.close();
     }
 </script>
 
-{#if isModalOpen}
-    <div
-        transition:fade={{ duration: 300 }}
-        class="absolute h-full w-full top-0 left-0 z-50 bg-black/30 flex flex-col justify-center items-center"
-    >
-        <div
-            in:fly={{ delay: 300, y: 100 }}
-            class="bg-white shadow-lg rounded p-4"
-        >
-            <div class="border-2 rounded p-4 max-w-lg">
-                <div class="flex justify-between pb-4">
-                    <span />
-                    <h1 class="font-bold text-center">Crear usuario</h1>
-                    <div>
-                        <SecondaryButton on:click={close}>
-                            <i class="fa-solid fa-xmark" />
-                        </SecondaryButton>
-                    </div>
-                </div>
-                <slot />
-                <div class="text-center mt-4">
-                    <SecondaryButton on:click={close}>Cancelar</SecondaryButton>
-                    <PrimaryButton>Aceptar</PrimaryButton>
-                </div>
-            </div>
+<Modal bind:this={modal} on:escape={cancel} on:enter={accept}>
+    <div class="flex justify-between pb-4">
+        <span />
+        <h1 class="font-bold text-center">
+            {modalTitle}
+        </h1>
+        <div>
+            <SecondaryButton on:click={cancel}>
+                <i class="fa-solid fa-xmark" />
+            </SecondaryButton>
         </div>
     </div>
-{/if}
+    <slot />
+    <div class="text-center mt-4">
+        <SecondaryButton on:click={cancel}>Cancelar</SecondaryButton>
+        <PrimaryButton on:click={cancel} focus>Aceptar</PrimaryButton>
+    </div>
+</Modal>

@@ -15,34 +15,32 @@
         email: "",
     };
 
-    let isConfirmUserCreateModalOpen = false;
+    let confirmationModal: ConfirmationModal;
 
     const userValidator = new UserValidator();
+
     function validateForm() {
         const validation = userValidator.validate(user);
 
         if (validation.success) {
             user = validation.data;
             formErrors = undefined;
-            openConfirmUserCreateModal();
+            confirmationModal.open();
         } else {
             formErrors = validation.error.formErrors;
         }
     }
 
-    function openConfirmUserCreateModal() {
-        isConfirmUserCreateModalOpen = true;
-    }
+    function createUser() {
 
-    function closeConfirmUserCreateModal() {
-        isConfirmUserCreateModalOpen = false;
     }
 </script>
 
 <MainLayout>
     <ConfirmationModal
-        isModalOpen={isConfirmUserCreateModalOpen}
-        on:close={closeConfirmUserCreateModal}
+        bind:this={confirmationModal}
+        modalTitle="Crear usuario"
+        on:accept={createUser}
     >
         Se creará el siguiente usuario:
 
