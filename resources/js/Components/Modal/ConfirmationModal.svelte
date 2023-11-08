@@ -26,21 +26,27 @@
     }
 </script>
 
-<Modal bind:this={modal} on:escape={cancel} on:enter={accept}>
-    <div class="flex justify-between pb-4">
-        <span />
-        <h1 class="font-bold text-center">
-            {modalTitle}
-        </h1>
-        <div>
-            <SecondaryButton on:click={cancel}>
-                <i class="fa-solid fa-xmark" />
-            </SecondaryButton>
+<Modal
+    bind:this={modal}
+    on:escape={cancel}
+    on:enter={accept}
+>
+    <div class="bg-white rounded shadow p-4">
+        <div class="flex justify-between pb-4">
+            <span />
+            <h1 class="font-bold text-center">
+                {modalTitle}
+            </h1>
+            <div>
+                <SecondaryButton on:click={cancel}>
+                    <i class="fa-solid fa-xmark" />
+                </SecondaryButton>
+            </div>
         </div>
-    </div>
-    <slot />
-    <div class="text-center mt-4">
-        <SecondaryButton on:click={cancel}>Cancelar</SecondaryButton>
-        <PrimaryButton on:click={cancel} focus>Aceptar</PrimaryButton>
+        <slot />
+        <div class="text-center mt-4">
+            <SecondaryButton on:click={cancel}>Cancelar</SecondaryButton>
+            <PrimaryButton on:click={accept} focus>Aceptar</PrimaryButton>
+        </div>
     </div>
 </Modal>

@@ -4,9 +4,12 @@
     import Tooltip from "../Components/Tooltip.svelte";
     import ConfirmationModal from "../Components/Modal/ConfirmationModal.svelte";
 
-    import { UserValidator } from "../Functions/Validation/Validation";
     import type { z } from "zod";
     import type { User } from "../Types/Types";
+    import LoadingModal from "../Components/Modal/LoadingModal.svelte";
+    import ErrorModal from "../Components/Modal/ErrorModal.svelte";
+    import { UserService } from "../Services/UserService";
+    import { userValidator } from "../Functions/Validation/Validation";
 
     let formErrors: z.typeToFlattenedError<User> | undefined;
     let user: User = {
@@ -16,8 +19,8 @@
     };
 
     let confirmationModal: ConfirmationModal;
-
-    const userValidator = new UserValidator();
+    let loadingModal: LoadingModal;
+    let errorModal: ErrorModal;
 
     function validateForm() {
         const validation = userValidator.validate(user);
@@ -31,8 +34,14 @@
         }
     }
 
-    function createUser() {
-
+    async function createUser() {
+        try {
+            const request = UserService.createUser();
+            await loadingModal.withLoading(request);
+        } catch (e: any) {
+            errorModal.open();
+        } finally {
+        }
     }
 </script>
 
@@ -61,6 +70,10 @@
             </table>
         </div>
     </ConfirmationModal>
+
+    <LoadingModal bind:this={loadingModal}>Creando usuario...</LoadingModal>
+
+    <ErrorModal bind:this={errorModal} />
 
     <div class="container mx-auto py-8 h-full">
         <div class="bg-white rounded py-4 px-8 h-full">

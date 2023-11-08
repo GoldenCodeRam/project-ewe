@@ -1,15 +1,37 @@
-<div
-    class="absolute h-full w-full top-0 left-0 z-50 bg-black/10 backdrop-blur-sm flex flex-col justify-center items-center"
->
-    <div class="bg-white shadow-lg rounded p-4 pt-6">
-        <div class="border-2 rounded p-4">
+<script lang="ts">
+    import Modal from "./Modal.svelte";
+
+    // TODO: We could add something like a loading cancel, that stops the
+    // execution if needed.
+
+    let modal: Modal;
+
+    export function open() {
+        modal.open();
+    }
+
+    export function close() {
+        modal.close();
+    }
+
+    export async function withLoading(callback: Promise<any>) {
+        modal.open();
+        // Attach the finally of the callback to close the modal.
+        return callback.finally(() => {
+            modal.close();
+        });
+    }
+</script>
+
+<Modal bind:this={modal}>
+    <div class="bg-white p-4 pt-6 rounded shadow">
+        <div class="p-4 border-2">
             <div
-                class="relative -mt-7 mb-2 bg-white border-2 rounded-full flex w-7 h-7 items-center justify-center mx-auto"
+                class="relative -mt-8 mb-2 bg-white border-2 rounded-full flex w-7 h-7 items-center justify-center mx-auto"
             >
                 <i class="animate-spin fa-solid fa-spinner" />
             </div>
-            Creando usuario...
-            <br />
+            <slot />
         </div>
     </div>
-</div>
+</Modal>

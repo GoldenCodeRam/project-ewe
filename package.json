@@ -9,7 +9,7 @@
         "@sveltejs/vite-plugin-svelte": "^2.4.6",
         "@tsconfig/svelte": "^5.0.2",
         "autoprefixer": "^10.4.16",
-        "axios": "^1.1.2",
+        "axios": "^1.6.0",
         "laravel-vite-plugin": "^0.8.0",
         "postcss": "^8.4.31",
         "svelte-preprocess": "^5.0.4",
