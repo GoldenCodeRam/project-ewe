@@ -10,12 +10,12 @@
     let loginStore = useLoginStore();
 
     async function validateLogin() {
-        LoginService.validate(loginStore).post($loginStore);
+        new LoginService(loginStore).validate();
     }
 </script>
 
 <LoginLayout>
-    {$loginStore.email.value}
+    {$loginStore.fields.email.value}
     <div class="container mx-auto py-8 h-full">
         <div class="flex flex-col justify-center items-center h-full">
             <div class="bg-white p-8 rounded shadow">
@@ -32,16 +32,16 @@
                         <Input
                             id="email"
                             label="Correo"
-                            errors={$loginStore.email.errors}
-                            bind:value={$loginStore.email.value}
+                            errors={$loginStore.fields.email.errors}
+                            bind:value={$loginStore.fields.email.value}
                         />
 
                         <Input
                             id="password"
                             label="Contraseña"
                             type="password"
-                            errors={$loginStore.password.errors}
-                            bind:value={$loginStore.password.value}
+                            errors={$loginStore.fields.password.errors}
+                            bind:value={$loginStore.fields.password.value}
                         />
                     </div>
 
