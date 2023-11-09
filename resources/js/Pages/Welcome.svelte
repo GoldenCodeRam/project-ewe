@@ -8,8 +8,7 @@
     import type { User } from "../Types/Types";
     import LoadingModal from "../Components/Modal/LoadingModal.svelte";
     import ErrorModal from "../Components/Modal/ErrorModal.svelte";
-    import { UserService } from "../Services/UserService";
-    import { userValidator } from "../Functions/Validation/Validation";
+    import { UserValidator } from "../Functions/Validation/UserValidator";
 
     let formErrors: z.typeToFlattenedError<User> | undefined;
     let user: User = {
@@ -23,7 +22,7 @@
     let errorModal: ErrorModal;
 
     function validateForm() {
-        const validation = userValidator.validate(user);
+        const validation = UserValidator.validate(user);
 
         if (validation.success) {
             user = validation.data;

@@ -10,14 +10,29 @@ export type Input = {
 };
 
 export interface Form {
+    isLoading: boolean;
+    hasError: boolean;
     fields: { [key: string]: Input };
-};
+}
 
 export interface LoginForm extends Form {
     fields: {
         email: Input;
         password: Input;
     };
+}
+
+export interface CreateUserForm extends Form {
+    fields: {
+        firstName: Input;
+        lastName: Input;
+        email: Input;
+    };
+}
+
+export interface ResponseInputError {
+    message: string;
+    errors: { [key: string]: string[] };
 }
 
 export function getValuesFromForm(form: Form) {

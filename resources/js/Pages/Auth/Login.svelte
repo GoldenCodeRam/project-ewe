@@ -3,19 +3,33 @@
     import Input from "../../Components/Input/Input.svelte";
     import PrimaryButton from "../../Components/Button/PrimaryButton.svelte";
     import { useLoginStore } from "../../Stores/LoginStore";
-    import { LoginService } from "../../Services/LoginService";
+    import { LoginValidator } from "../../Functions/Validation/LoginValidator";
+    import { LoginService } from "../../Functions/Services/LoginService";
+    import LoadingModal from "../../Components/Modal/LoadingModal.svelte";
 
-    export let errors = {};
+    let loadingModal: LoadingModal;
 
     let loginStore = useLoginStore();
 
-    async function validateLogin() {
-        new LoginService(loginStore).validate();
+    async function login() {
+        LoginValidator.validate(loginStore);
+        if (!$loginStore.hasError) {
+            $loginStore.isLoading = true;
+
+            setTimeout(async () => {
+                const errors = await LoginService.post($loginStore);
+                $loginStore.isLoading = false;
+                LoginValidator.setStoreErrors(loginStore, errors!);
+            }, 3000);
+        }
     }
 </script>
 
 <LoginLayout>
-    {$loginStore.fields.email.value}
+    <LoadingModal open={$loginStore.isLoading}>
+        Iniciando sesión...
+    </LoadingModal>
+
     <div class="container mx-auto py-8 h-full">
         <div class="flex flex-col justify-center items-center h-full">
             <div class="bg-white p-8 rounded shadow">
@@ -27,7 +41,7 @@
                 </h1>
                 <h2 class="text-center text-md text-gray-700">Ingresar</h2>
 
-                <form on:submit|preventDefault={validateLogin}>
+                <form on:submit|preventDefault={login}>
                     <div class="flex flex-col gap-2">
                         <Input
                             id="email"

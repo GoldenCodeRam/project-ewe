@@ -6,13 +6,8 @@
 
     let modal: Modal;
 
-    export function open() {
-        modal.open();
-    }
-
-    export function close() {
-        modal.close();
-    }
+    export let open: boolean;
+    $: open ? modal?.open() : modal?.close();
 
     export async function withLoading(callback: Promise<any>) {
         modal.open();

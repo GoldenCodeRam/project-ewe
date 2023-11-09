@@ -8,6 +8,8 @@ export function useInputStore(): Writable<Input> {
 
 export function useLoginStore(): Writable<LoginForm> {
     return writable<LoginForm>({
+        isLoading: false,
+        hasError: false,
         fields: {
             email: {},
             password: {},
