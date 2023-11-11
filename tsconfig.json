@@ -3,6 +3,7 @@
     "include": ["resources/**/*"],
     "exclude": ["node_modules/*"],
     "compileOptions": {
-        "strict": true
+        "strict": true,
+        "esModuleInterop": true
     }
 }

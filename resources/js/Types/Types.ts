@@ -1,3 +1,15 @@
+export type InputErrors = { [key: string]: string[] };
+
+export function toInputErrors(errorObject: {
+    [key: string]: string;
+}): InputErrors {
+    const result: InputErrors = {};
+    for (const key in errorObject) {
+        result[key] = [errorObject[key as keyof typeof errorObject]];
+    }
+    return result;
+}
+
 export type User = {
     firstName?: string;
     lastName?: string;
@@ -32,7 +44,7 @@ export interface CreateUserForm extends Form {
 
 export interface ResponseInputError {
     message: string;
-    errors: { [key: string]: string[] };
+    errors: InputErrors;
 }
 
 export function getValuesFromForm(form: Form) {

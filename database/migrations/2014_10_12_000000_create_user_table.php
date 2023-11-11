@@ -5,14 +5,14 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('user', function (Blueprint $table) {
+            $table->id();
             // Generate a new default UUID if it's not provided.
             $table->uuid()->default(DB::raw("(UUID())"));
             $table->string('name');

@@ -6,8 +6,9 @@
     import { LoginValidator } from "../../Functions/Validation/LoginValidator";
     import { LoginService } from "../../Functions/Services/LoginService";
     import LoadingModal from "../../Components/Modal/LoadingModal.svelte";
+    import { toInputErrors } from "../../Types/Types";
 
-    let loadingModal: LoadingModal;
+    export let errors: { [key: string]: string };
 
     let loginStore = useLoginStore();
 
@@ -15,14 +16,12 @@
         LoginValidator.validate(loginStore);
         if (!$loginStore.hasError) {
             $loginStore.isLoading = true;
-
-            setTimeout(async () => {
-                const errors = await LoginService.post($loginStore);
-                $loginStore.isLoading = false;
-                LoginValidator.setStoreErrors(loginStore, errors!);
-            }, 3000);
+            await LoginService.post($loginStore);
+            $loginStore.isLoading = false;
         }
     }
+
+    $: LoginValidator.setStoreErrors(loginStore, toInputErrors(errors));
 </script>
 
 <LoginLayout>

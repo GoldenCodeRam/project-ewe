@@ -32,7 +32,14 @@ export class Validator<T extends Form = Form> {
 
         // Assign the parsing errors to the form fields.
         if (!parse.success) {
-            this.setStoreErrors(store, parse.error.flatten().fieldErrors);
+            let errors = parse.error.formErrors.fieldErrors;
+            // Remove undefined fields from the errors.
+            Object.keys(errors).forEach(
+                // Short-circuit evaluation.
+                (key) => errors[key] === undefined && delete errors[key],
+            );
+
+            this.setStoreErrors(store, errors as { [key: string]: string[] });
         }
 
         // If the parsing has an error and the store fields don't have any
@@ -46,7 +53,7 @@ export class Validator<T extends Form = Form> {
 
     public setStoreErrors(
         store: Writable<T>,
-        errors: { [key: string]: string[] | undefined },
+        errors: { [key: string]: string[] },
     ) {
         // If has a translator attached to this validator.
         if (this.errorTranslator) {

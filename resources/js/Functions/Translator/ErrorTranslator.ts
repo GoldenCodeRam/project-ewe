@@ -1,11 +1,14 @@
 export class ErrorTranslator {
     constructor(private translator: (error: string) => string) {}
 
-    public translate(errors: { [key: string]: string[] | undefined }) {
-        for (const key of Object.keys(errors)) {
-            errors[key] = errors[key]?.map((value) => this.translator(value));
+    public translate(errors: { [key: string]: string[] }) {
+        if (errors) {
+            for (const key of Object.keys(errors)) {
+                errors[key] = (errors[key] as string[])?.map(
+                    (value) => this.translator(value),
+                );
+            }
         }
-
         return errors;
     }
 }
