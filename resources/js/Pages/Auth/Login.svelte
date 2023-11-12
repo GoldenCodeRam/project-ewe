@@ -2,11 +2,11 @@
     import LoginLayout from "../../Layouts/LoginLayout.svelte";
     import Input from "../../Components/Input/Input.svelte";
     import PrimaryButton from "../../Components/Button/PrimaryButton.svelte";
-    import { useLoginStore } from "../../Stores/LoginStore";
     import { LoginValidator } from "../../Functions/Validation/LoginValidator";
     import { LoginService } from "../../Functions/Services/LoginService";
     import LoadingModal from "../../Components/Modal/LoadingModal.svelte";
     import { toInputErrors } from "../../Types/Types";
+    import { useLoginStore } from "../../Components/Stores/LoginStore";
 
     export let errors: { [key: string]: string };
 

@@ -11,15 +11,23 @@ export function toInputErrors(errorObject: {
 }
 
 export type User = {
-    firstName?: string;
-    lastName?: string;
+    name?: string;
     email?: string;
 };
 
 export type Input = {
-    value?: string;
+    value: string;
     errors?: string[];
 };
+
+export type Auth = {
+    user?: User;
+};
+
+export type Product = {
+    name: string;
+    value: number;
+}
 
 export interface Form {
     isLoading: boolean;
@@ -27,11 +35,19 @@ export interface Form {
     fields: { [key: string]: Input };
 }
 
+
 export interface LoginForm extends Form {
     fields: {
         email: Input;
         password: Input;
     };
+}
+
+export interface CreateProductForm extends Form {
+    fields: {
+        name: Input;
+        value: Input;
+    }
 }
 
 export interface CreateUserForm extends Form {

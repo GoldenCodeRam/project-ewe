@@ -1,4 +1,4 @@
-import { getValuesFromForm, type LoginForm } from "../../Types/Types";
+import { getValuesFromForm, type CreateProductForm, type LoginForm } from "../../Types/Types";
 import { router } from "@inertiajs/svelte";
 
 const POST_URL = "/login";

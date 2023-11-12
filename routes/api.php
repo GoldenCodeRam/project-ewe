@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,7 +20,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->group(function() {
-    Route::post("/users", function() {
-        return "test";
-    });
+    Route::get("/product", [ProductController::class, "index"]);
+    Route::post("/product/create", [ProductController::class, "store"]);
 });

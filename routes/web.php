@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -15,18 +16,28 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', []);
-});
 
-Route::middleware("auth")->group(function() {
-    Route::get('/home', function() {
-        return Inertia::render('Home', []);
+Route::middleware("auth")->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('Welcome', []);
+    });
+
+    Route::get('/home', function () {
+        return Inertia::render('Home', [
+            "user" => Auth::user(),
+        ]);
+    })->name("Home");
+
+    Route::get('/home/product/create', function () {
+        return Inertia::render('Product/Create', [
+            "user" => Auth::user(),
+        ]);
     });
 });
 
 
-function test() {
+function test()
+{
     $radius = 80;
     $coordinates = [];
     for ($i = 0; $i < 6; $i++) {
@@ -38,7 +49,8 @@ function test() {
     return $coordinates;
 }
 
-function catmullRom2bezier() {
+function catmullRom2bezier()
+{
     $points = test();
     $size = count($points);
 
@@ -64,7 +76,8 @@ function catmullRom2bezier() {
     return $path;
 }
 
-function tj($ti, $pi, $pj) {
+function tj($ti, $pi, $pj)
+{
     $dx = $pi[0] - $pj[0];
     $dy = $pi[1] - $pj[1];
     $l = pow(pow($dx, 2) + pow($dy, 2), 0.5);

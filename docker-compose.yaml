@@ -12,3 +12,9 @@ services:
       MYSQL_USER: project-ewe
       MYSQL_PASSWORD: project-ewe
       MYSQL_ROOT_PASSWORD: example
+
+  redis:
+    image: redis
+    command: --save 60 1 --loglevel warning
+    ports:
+      - "6379:6379"

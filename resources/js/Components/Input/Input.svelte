@@ -5,12 +5,11 @@
         type: $$props.type,
     };
 
-    export let id: string = "";
-    export let label: string = "";
+    export let id: string;
+    export let label: string;
     export let placeholder: string = "";
 
     export let errors: string[] | undefined;
-
     export let value: string | undefined;
 
     const baseClass =
@@ -21,7 +20,7 @@
             : " focus-within:ring-gray-600";
 </script>
 
-<div>
+<div class="mx-auto">
     <label for={id} class="block text-sm font-medium leading-6 text-gray-900">
         {label ?? id}
     </label>

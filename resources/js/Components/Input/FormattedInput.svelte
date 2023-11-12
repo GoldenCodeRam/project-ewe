@@ -1,7 +1,24 @@
 <script lang="ts">
     import { COPFormatter } from "../../Functions/Formatter";
+    import { fade } from "svelte/transition";
 
-    let realValue: string;
+    const props = {
+        type: $$props.type,
+    };
+
+    export let id: string;
+    export let label: string;
+    export let placeholder: string = "";
+
+    export let errors: string[] | undefined;
+    export let realValue: string | undefined;
+
+    const baseClass =
+        "flex items-center rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset sm:max-w-md";
+    $: errorClass =
+        errors && errors.length > 0
+            ? "bg-red-50 ring-red-400"
+            : " focus-within:ring-gray-600";
 
     /**
      * Heavily inspired by this [REPL](https://svelte.dev/repl/f45d38ec017749ddbcb86310d1102f82?version=3.46.4)
@@ -100,24 +117,30 @@
     }
 </script>
 
-
-<div class="sm:col-span-4">
-    <label
-        for="username"
-        class="block text-sm font-medium leading-6 text-gray-900"
-    >
-        Username
+<div class="mx-auto">
+    <label for={id} class="block text-sm font-medium leading-6 text-gray-900">
+        {label ?? id}
     </label>
-    <div
-        class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md"
-    >
+    <div class="{baseClass} {errorClass}">
+        <!-- Main component -->
         <input
-            id="username"
-            on:beforeinput={validate}
-            type="text"
+            {id}
             class="outline-none block flex-1 border-0 bg-transparent py-1.5 px-2 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
             autocomplete="off"
-            placeholder="$ 123.12"
+            on:beforeinput={validate}
+            {placeholder}
+            {...props}
         />
+
+        {#if errors && errors.length > 0}
+            <div transition:fade>
+                <i class="fa-solid fa-circle-exclamation text-red-500 px-2" />
+            </div>
+        {/if}
     </div>
+    {#if errors && errors.length > 0}
+        <div transition:fade>
+            <p class="text-sm text-red-900">{errors}</p>
+        </div>
+    {/if}
 </div>
