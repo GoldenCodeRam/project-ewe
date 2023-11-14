@@ -20,7 +20,7 @@
         CreateObjectValidator.validate(store);
         if (!$store.hasError) {
             $store.isLoading = true;
-            await new ProductService(5000).post($store);
+            await new ProductService(1000).post($store);
             $store.isLoading = false;
         }
     }

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Link } from "@inertiajs/svelte";
-import { GlobalAuthStore } from "../Components/Stores/AuthStore";
+    import { GlobalAuthStore } from "../Components/Stores/AuthStore";
     import MainLayout from "../Layouts/MainLayout.svelte";
     import ProductTable from "../Tables/ProductTable.svelte";
 
@@ -11,16 +11,17 @@ import { GlobalAuthStore } from "../Components/Stores/AuthStore";
 
 <MainLayout>
     <div class="grid h-full grid-cols-1 md:grid-cols-12">
-        <div class="flex flex-col gap-3 col-span-4 bg-white shadow-md border-e px-6 py-4">
+        <div
+            class="flex flex-col gap-3 col-span-4 bg-white shadow-md border-e px-6 py-4"
+        >
             <h1 class="text-center font-bold text-xl">Objetos</h1>
-            <Link href="/home/product/create" class="secondary-button text-center">Crear</Link>
+            <Link
+                href="/home/product/create"
+                class="secondary-button text-center">Crear</Link
+            >
         </div>
         <div class="col-span-8">
-            <div class="flex flex-col justify-center items-center h-full text-gray-400">
-                <i class="fa-solid fa-box-open text-8xl"></i>
-                <p>Sin objetos</p>
-            </div>
+            <ProductTable />
         </div>
-        <ProductTable />
     </div>
 </MainLayout>

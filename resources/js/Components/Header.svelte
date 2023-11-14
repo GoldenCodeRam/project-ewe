@@ -2,7 +2,7 @@
     import AuthDropdown from "./Dropdown/AuthDropdown.svelte";
 </script>
 
-<header class="shadow z-10 border-b">
+<header class="shadow-sm z-10 border-b">
     <div class="container mx-auto py-2">
         <div class="flex justify-between items-center">
             <a href="/">
