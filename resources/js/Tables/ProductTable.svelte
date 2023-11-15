@@ -5,44 +5,62 @@
         getCoreRowModel,
         type TableOptions,
         flexRender,
-        getSortedRowModel,
-        getPaginationRowModel,
         getFilteredRowModel,
+        type ColumnSort,
+        type Table,
     } from "@tanstack/svelte-table";
     import { fade } from "svelte/transition";
-    import { writable } from "svelte/store";
-    import type { Product } from "../Types/Types";
-    import { ProductService } from "../Functions/Services/CreateProductService";
-
-    const defaultData: Product[] = [];
-    const service: ProductService = new ProductService(3000);
+    import { writable, type Readable } from "svelte/store";
+    import type { PaginatedResponse, Product } from "../Types/Types";
+    import { ProductService } from "../Functions/Services/ProductService";
 
     let isLoading: boolean = false;
+    let sorting: any[] = [];
 
-    async function updateTable() {
-        isLoading = true;
-        const response = await service.get();
-        isLoading = false;
-
-        $options.data = response.data;
-    }
-
+    const defaultData: Product[] = [];
+    const service: ProductService = new ProductService();
     const columns: ColumnDef<Product>[] = [
         {
             id: "name",
+            header: "Nombre",
             accessorFn: (data) => data.name,
             cell: (info) => info.getValue(),
-            footer: (info) => info.column.id,
         },
         {
             id: "value",
+            header: "Valor",
             accessorFn: (data) => data.value,
             cell: (info) => info.getValue(),
-            footer: (info) => info.column.id,
         },
     ];
+    const options = writable<TableOptions<Product>>({
+        data: defaultData,
+        columns: columns,
+        state: {
+            sorting,
+        },
+        onSortingChange: setSorting,
+        getCoreRowModel: getCoreRowModel(),
+        manualSorting: true,
+        getFilteredRowModel: getFilteredRowModel(),
+        manualPagination: true,
+        debugTable: true,
+    });
+    const table = createSvelteTable(options);
 
-    let sorting: any[] = [];
+    async function updateTable(
+        sort?: ColumnSort[]
+    ) {
+        const response = await service.get({
+            sort,
+        });
+        isLoading = false;
+
+        console.log(response.data);
+        // As the information comes paginated, we need:
+        // The data of the query -> the data of the pagination.
+        $options.data = response.data.data;
+    }
 
     function setSorting(updater: any) {
         if (updater instanceof Function) {
@@ -60,25 +78,8 @@
         };
 
         // Update sorted value
-        updateTable();
+        updateTable($options.state?.sorting);
     }
-
-    const options = writable<TableOptions<Product>>({
-        data: defaultData,
-        columns: columns,
-        state: {
-            sorting,
-        },
-        onSortingChange: setSorting,
-        getCoreRowModel: getCoreRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        manualSorting: true,
-        getFilteredRowModel: getFilteredRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        debugTable: true,
-    });
-
-    const table = createSvelteTable(options);
 
     // At start, load all the data.
     updateTable();
@@ -100,7 +101,7 @@
 
         <h1 class="text-xl font-bold text-center">Lista de Productos</h1>
 
-        <table class="table-auto border w-full">
+        <table class="table-fixed border w-full">
             <thead>
                 {#each $table.getHeaderGroups() as headerGroup}
                     <tr>
@@ -111,6 +112,7 @@
                                         class:cursor-pointer={header.column.getCanSort()}
                                         class:select-none={header.column.getCanSort()}
                                         on:click={header.column.getToggleSortingHandler()}
+                                        class="flex justify-center items-center"
                                     >
                                         <svelte:component
                                             this={flexRender(
@@ -118,14 +120,19 @@
                                                 header.getContext()
                                             )}
                                         />
-                                        {{
-                                            asc: " 🔼",
-                                            desc: " 🔽",
-                                        }[
-                                            header.column
-                                                .getIsSorted()
-                                                .toString()
-                                        ] ?? ""}
+                                        {#if header.column
+                                            .getIsSorted()
+                                            .toString() === "asc"}
+                                            <i
+                                                class="ms-2 fa-solid fa-sort-up"
+                                            />
+                                        {:else if header.column
+                                            .getIsSorted()
+                                            .toString() === "desc"}
+                                            <i
+                                                class="ms-2 fa-solid fa-sort-down"
+                                            />
+                                        {/if}
                                     </div>
                                 {/if}
                             </th>

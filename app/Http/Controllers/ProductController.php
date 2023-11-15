@@ -5,15 +5,39 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Product::all();
+        $query = DB::table(Product::TABLE_NAME);
+        $parameters = $request->query->all();
+
+        foreach($parameters as $key => $value) {
+            switch ($key) {
+                // TODO: This should be its own method.
+                // TODO: This should have a way to verify that the columns
+                // requested exists on the table.
+                case "sort":
+                    foreach($value as $sorting) {
+                        $query->orderBy(
+                            $sorting["id"],
+                            filter_var($sorting["desc"], FILTER_VALIDATE_BOOLEAN) ? "desc" : "asc"
+                        );
+                    }
+            }
+        }
+
+        // If the query doesn't has any other parameter, return all the
+        // products.
+        // TODO: This limit should be specified somewhere else, not
+        // here.
+        return $query->paginate(10);
     }
 
     /**

@@ -10,6 +10,11 @@ export function toInputErrors(errorObject: {
     return result;
 }
 
+export type PaginatedResponse<T> = {
+    current_page: number;
+    data: T[];
+};
+
 export type User = {
     name?: string;
     email?: string;
@@ -27,14 +32,13 @@ export type Auth = {
 export type Product = {
     name: string;
     value: number;
-}
+};
 
 export interface Form {
     isLoading: boolean;
     hasError: boolean;
     fields: { [key: string]: Input };
 }
-
 
 export interface LoginForm extends Form {
     fields: {
@@ -47,7 +51,7 @@ export interface CreateProductForm extends Form {
     fields: {
         name: Input;
         value: Input;
-    }
+    };
 }
 
 export interface CreateUserForm extends Form {

@@ -6,7 +6,7 @@
     import { CreateObjectValidator } from "../../Functions/Validation/LoginValidator";
     import { toInputErrors } from "../../Types/Types";
     import { useCreateProductStore } from "../../Components/Stores/ProductStore";
-    import { ProductService } from "../../Functions/Services/CreateProductService";
+    import { ProductService } from "../../Functions/Services/ProductService";
     import LoadingModal from "../../Components/Modal/LoadingModal.svelte";
 
     export let errors: { [key: string]: string };

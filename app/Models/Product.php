@@ -12,7 +12,9 @@ class Product extends Model
     use HasFactory;
     use HasUuids;
 
-    protected $table = "product";
+    public const TABLE_NAME = "product";
+
+    protected $table = Product::TABLE_NAME;
 
     /**
      * The attributes that are mass assignable.
