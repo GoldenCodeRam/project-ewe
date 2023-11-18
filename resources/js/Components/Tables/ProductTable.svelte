@@ -20,8 +20,6 @@
     const serviceStore = service.getStore();
     const serviceLoadingStore = service.getLoadingStore();
 
-    const defaultData: Product[] = [];
-
     const columns: ColumnDef<Product>[] = [
         {
             id: "name",
@@ -37,7 +35,7 @@
         },
     ];
     const options = writable<TableOptions<Product>>({
-        data: defaultData,
+        data: $serviceStore.data,
         columns: columns,
         state: {
             sorting,
@@ -55,7 +53,6 @@
         await service.get({
             sort,
         });
-        $options.data = $serviceStore.data;
     }
 
     function setSorting(updater: any) {
@@ -210,6 +207,7 @@
                 </strong>
             </span>
         </div>
+        <Paginator {service} />
         <div>{$table.getRowModel().rows.length} Rows</div>
         <pre>{JSON.stringify($table.getState().pagination, null, 2)}</pre>
     </div>

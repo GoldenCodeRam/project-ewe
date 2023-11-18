@@ -1,6 +1,10 @@
 <script lang="ts">
-    import type { Pagination } from "../Types/Types";
+    import type {
+        PaginationService,
+        Service,
+    } from "../Functions/Services/Service";
     import { createEventDispatcher } from "svelte";
+    import type { PaginatedResponse } from "../Types/Types";
 
     enum ButtonAction {
         NEXT,
@@ -9,7 +13,8 @@
         FORWARD,
     }
 
-    export let paginationData: Pagination | undefined;
+    export let service: Service<PaginatedResponse> & PaginationService;
+    const serviceStore = service.getStore();
 
     const dispatch = createEventDispatcher();
     const PAGINATOR_SIZE = 5;
@@ -32,13 +37,13 @@
 
     function getPaginationNumbers(currentPage: number): number[] {
         // This should never happen, but to avoid errors, it's set.
-        if (paginationData) {
+        if ($serviceStore) {
             const start = Math.max(
                 1,
                 Math.ceil(currentPage - PAGINATOR_SIZE / 2)
             );
             const end = Math.min(
-                paginationData.total / paginationData.per_page,
+                getTotalPages(),
                 Math.floor(currentPage + PAGINATOR_SIZE / 2)
             );
             return Array.from({ length: end - start + 1 }, (_, i) => start + i);
@@ -47,30 +52,23 @@
     }
 
     function getTotalPages(): number {
-        if (paginationData) {
-            return paginationData.total / paginationData.per_page;
+        if ($serviceStore) {
+            return $serviceStore.total / $serviceStore.per_page;
         }
         return 0;
     }
 
     function go(pageNumber: number) {
-        dispatch("go", pageNumber);
+        service.getPage(pageNumber);
     }
 
     function action(buttonAction: ButtonAction) {
-        if (paginationData) {
+        if ($serviceStore) {
             switch (buttonAction) {
                 case ButtonAction.NEXT:
-                    return dispatch("next", paginationData.current_page + 1);
                 case ButtonAction.PREVIOUS:
-                    return dispatch(
-                        "previous",
-                        paginationData.current_page - 1
-                    );
                 case ButtonAction.BACKWARD:
-                    return dispatch("backward", 1);
                 case ButtonAction.FORWARD:
-                    return dispatch("forward", getTotalPages());
                 default:
                     throw Error("ButtonAction not registered!");
             }
@@ -78,18 +76,18 @@
     }
 
     $: {
-        if (paginationData) {
+        if ($serviceStore) {
             buttonStatus.forward.enabled =
-                paginationData.current_page < getTotalPages();
-            buttonStatus.backward.enabled = paginationData.current_page > 1;
-            buttonStatus.next.enabled = paginationData.next_page_url
+                $serviceStore.current_page < getTotalPages();
+            buttonStatus.backward.enabled = $serviceStore.current_page > 1;
+            buttonStatus.next.enabled = $serviceStore.next_page_url
                 ? true
                 : false;
-            buttonStatus.previous.enabled = paginationData.prev_page_url
+            buttonStatus.previous.enabled = $serviceStore.prev_page_url
                 ? true
                 : false;
 
-            numbers = getPaginationNumbers(paginationData.current_page);
+            numbers = getPaginationNumbers($serviceStore.current_page);
         }
     }
 </script>
@@ -128,7 +126,6 @@
     >
         <i class="fa-solid fa-forward" />
     </button>
-    {paginationData?.current_page} from {getTotalPages()}
 </div>
 
 <style>

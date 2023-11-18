@@ -1,6 +1,15 @@
+import type { ColumnSort } from "@tanstack/svelte-table";
 import { type Writable, writable } from "svelte/store";
 
-export class Service<T> {
+export interface PaginationService {
+    getNextPage(): void;
+    getPreviousPage(): void;
+    getStartPage(): void;
+    getEndPage(): void;
+    getPage(page: number, options?: { sort?: ColumnSort[] }): Promise<void>;
+}
+
+export class Service<T = Object> {
     private store: Writable<T> = writable();
     private loadingStore = writable({
         isLoading: false,

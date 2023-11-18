@@ -24,7 +24,7 @@ export type Response<T> = {
     data: T[];
 };
 
-export type PaginatedResponse<T> = Response<T> & Pagination;
+export type PaginatedResponse<T = Object> = Response<T> & Pagination;
 
 export type User = {
     name?: string;
