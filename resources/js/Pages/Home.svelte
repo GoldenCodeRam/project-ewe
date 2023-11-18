@@ -2,7 +2,7 @@
     import { Link } from "@inertiajs/svelte";
     import { GlobalAuthStore } from "../Components/Stores/AuthStore";
     import MainLayout from "../Layouts/MainLayout.svelte";
-    import ProductTable from "../Tables/ProductTable.svelte";
+    import ProductTable from "../Components/Tables/ProductTable.svelte";
 
     export let user: any;
 

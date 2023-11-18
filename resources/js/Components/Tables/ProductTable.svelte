@@ -7,18 +7,21 @@
         flexRender,
         getFilteredRowModel,
         type ColumnSort,
-        type Table,
     } from "@tanstack/svelte-table";
     import { fade } from "svelte/transition";
-    import { writable, type Readable } from "svelte/store";
-    import type { PaginatedResponse, Product } from "../Types/Types";
-    import { ProductService } from "../Functions/Services/ProductService";
+    import { writable } from "svelte/store";
+    import type { Product } from "../../Types/Types";
+    import { ProductService } from "../../Functions/Services/ProductService";
+    import Paginator from "../Paginator.svelte";
 
-    let isLoading: boolean = false;
     let sorting: any[] = [];
 
+    const service: ProductService = new ProductService(3000);
+    const serviceStore = service.getStore();
+    const serviceLoadingStore = service.getLoadingStore();
+
     const defaultData: Product[] = [];
-    const service: ProductService = new ProductService();
+
     const columns: ColumnDef<Product>[] = [
         {
             id: "name",
@@ -48,18 +51,11 @@
     });
     const table = createSvelteTable(options);
 
-    async function updateTable(
-        sort?: ColumnSort[]
-    ) {
-        const response = await service.get({
+    async function updateTable(sort?: ColumnSort[]) {
+        await service.get({
             sort,
         });
-        isLoading = false;
-
-        console.log(response.data);
-        // As the information comes paginated, we need:
-        // The data of the query -> the data of the pagination.
-        $options.data = response.data.data;
+        $options.data = $serviceStore.data;
     }
 
     function setSorting(updater: any) {
@@ -90,7 +86,7 @@
         class="p-4 bg-white rounded shadow relative h-full w-full overflow-auto"
     >
         <!-- Loading indicator -->
-        {#if isLoading}
+        {#if $serviceLoadingStore.isLoading}
             <div
                 transition:fade
                 class="bg-white/80 absolute w-full h-full top-0 left-0 flex items-center justify-center"

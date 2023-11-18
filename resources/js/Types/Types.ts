@@ -10,10 +10,21 @@ export function toInputErrors(errorObject: {
     return result;
 }
 
-export type PaginatedResponse<T> = {
+// This type comes from the pagination information returned by Laravel, that's
+// why the variables have these names.
+export type Pagination = {
     current_page: number;
+    per_page: number;
+    total: number;
+    next_page_url?: string;
+    prev_page_url?: string;
+};
+
+export type Response<T> = {
     data: T[];
 };
+
+export type PaginatedResponse<T> = Response<T> & Pagination;
 
 export type User = {
     name?: string;
