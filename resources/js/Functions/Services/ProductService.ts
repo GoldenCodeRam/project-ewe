@@ -1,69 +1,83 @@
-import { router } from "@inertiajs/svelte";
+import type { ColumnSort } from "@tanstack/svelte-table";
 import {
     getValuesFromForm,
     type CreateProductForm,
-    type Product,
     type PaginatedResponse,
+    type Product,
 } from "../../Types/Types";
-import { Service, type PaginationService } from "./Service";
+import {
+    createLoadingStore,
+    type HasLoadingStore,
+    type HasPagination,
+    type HasSortingStore,
+    type Service,
+} from "./Service";
+import { writable, get } from "svelte/store";
 import axios from "axios";
-import type { ColumnSort } from "@tanstack/svelte-table";
+import { router } from "@inertiajs/svelte";
 
 const BASE_URL = "/api/product";
 
-export class ProductService
-    extends Service<PaginatedResponse<Product>>
-    implements PaginationService
-{
+export type ProductService = Service<PaginatedResponse<Product>> &
+    HasPagination &
+    HasLoadingStore &
+    HasSortingStore & {
+        get: () => Promise<void>;
+        post(form: CreateProductForm): Promise<void>;
+    };
 
-    public async post(form: CreateProductForm) {
-        await this.wait();
-        await router.post(`${BASE_URL}/create`, getValuesFromForm(form));
-    }
-
-    public async get(options?: { sort?: ColumnSort[] }) {
-        return this.doWithLoading(async () => {
-            const response = await axios.get<PaginatedResponse<Product>>(
-                BASE_URL,
-                {
-                    params: options,
-                },
-            );
-
-            // TODO: Handle when the response is not correct.
-            this.getStore().set(response.data);
-
-            this.getLoadingStore().set({ isLoading: false });
-        });
-    }
-
-    getNextPage(): void {
-        throw new Error("Method not implemented.");
-    }
-    getPreviousPage(): void {
-        throw new Error("Method not implemented.");
-    }
-    getStartPage(): void {
-        throw new Error("Method not implemented.");
-    }
-    getEndPage(): void {
-        throw new Error("Method not implemented.");
-    }
-
-    async getPage(page: number, options?: { sort?: ColumnSort[] }) {
-        await this.doWithLoading(async () => {
-            const response = await axios.get<PaginatedResponse<Product>>(
-                BASE_URL,
-                {
-                    params: {
-                        page,
-                        ...options,
+export function createProductService(): ProductService {
+    return {
+        store: writable({
+            current_page: 0,
+            per_page: 0,
+            total: 0,
+            data: [],
+        }),
+        sortingStore: writable({
+            sort: [],
+        }),
+        ...createLoadingStore(3000),
+        getNextPage() {},
+        getPreviousPage() {},
+        getStartPage() {},
+        getEndPage() {},
+        async getPage(page: number, options?: { sort?: ColumnSort[] }) {
+            this.doWithLoading(async () => {
+                const response = await axios.get<PaginatedResponse<Product>>(
+                    BASE_URL,
+                    {
+                        params: {
+                            page,
+                            ...options,
+                        },
                     },
-                },
-            );
+                );
 
-            // TODO: Handle when the response is not correct.
-            this.getStore().set(response.data);
-        });
-    }
+                // TODO: Handle when the response is not correct.
+                this.store.set(response.data);
+            });
+        },
+        async get() {
+            return this.doWithLoading(async () => {
+                const response = await axios.get<PaginatedResponse<Product>>(
+                    BASE_URL,
+                    {
+                        params: get(this.sortingStore),
+                    },
+                );
+
+                // TODO: Handle when the response is not correct.
+                this.store.set(response.data);
+            });
+        },
+        async post(form: CreateProductForm) {
+            await this.doWithLoading(async () => {
+                await router.post(
+                    `${BASE_URL}/create`,
+                    getValuesFromForm(form),
+                );
+            });
+        },
+    };
 }

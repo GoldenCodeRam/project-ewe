@@ -1,7 +1,7 @@
 import type { ColumnSort } from "@tanstack/svelte-table";
 import { type Writable, writable } from "svelte/store";
 
-export interface PaginationService {
+export interface HasPagination {
     getNextPage(): void;
     getPreviousPage(): void;
     getStartPage(): void;
@@ -9,42 +9,45 @@ export interface PaginationService {
     getPage(page: number, options?: { sort?: ColumnSort[] }): Promise<void>;
 }
 
-export class Service<T = Object> {
-    private store: Writable<T> = writable();
-    private loadingStore = writable({
-        isLoading: false,
-    });
+export type Service<T> = {
+    store: Writable<T>;
+};
 
-    constructor(private timeout: number = 0) {}
+export type HasLoadingStore = {
+    timeout: number;
+    loadingStore: Writable<{
+        isLoading: boolean;
+    }>;
+    wait: () => Promise<void>;
+    doWithLoading: (callback: () => Promise<void>) => Promise<void>;
+};
 
-    public getStore() {
-        return this.store;
-    }
+export function createLoadingStore(timeout: number = 0) {
+    return {
+        timeout,
+        loadingStore: writable({
+            isLoading: false,
+        }),
+        async wait() {
+            if (this.timeout > 0) {
+                await new Promise<void>((resolve) =>
+                    setTimeout(() => resolve(), this.timeout),
+                );
+            }
+        },
+        async doWithLoading(callback: () => Promise<void>) {
+            this.loadingStore.set({ isLoading: true });
 
-    public getLoadingStore() {
-        return this.loadingStore;
-    }
+            await this.wait();
+            await callback();
 
-    public setTimeout(timeout: number) {
-        this.timeout = timeout;
-        return this;
-    }
-
-    public async doWithLoading(callback: () => Promise<void>) {
-        this.loadingStore.set({ isLoading: true });
-
-        await this.wait();
-        await callback();
-
-        this.loadingStore.set({ isLoading: false });
-    }
-
-    protected async wait(): Promise<this> {
-        if (this.timeout > 0) {
-            await new Promise<void>((resolve) =>
-                setTimeout(() => resolve(), this.timeout),
-            );
-        }
-        return this;
-    }
+            this.loadingStore.set({ isLoading: false });
+        },
+    };
 }
+
+export type HasSortingStore = {
+    sortingStore: Writable<{
+        sort: ColumnSort[];
+    }>;
+};

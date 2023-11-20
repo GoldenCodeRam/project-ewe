@@ -1,9 +1,5 @@
 <script lang="ts">
-    import type {
-        PaginationService,
-        Service,
-    } from "../Functions/Services/Service";
-    import { createEventDispatcher } from "svelte";
+    import type { HasPagination, Service } from "../Functions/Services/Service";
     import type { PaginatedResponse } from "../Types/Types";
 
     enum ButtonAction {
@@ -13,10 +9,9 @@
         FORWARD,
     }
 
-    export let service: Service<PaginatedResponse> & PaginationService;
-    const serviceStore = service.getStore();
+    export let service: Service<PaginatedResponse> & HasPagination;
+    const serviceStore = service.store;
 
-    const dispatch = createEventDispatcher();
     const PAGINATOR_SIZE = 5;
     const buttonStatus = {
         forward: {

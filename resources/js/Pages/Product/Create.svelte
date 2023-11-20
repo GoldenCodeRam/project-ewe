@@ -6,8 +6,8 @@
     import { CreateObjectValidator } from "../../Functions/Validation/LoginValidator";
     import { toInputErrors } from "../../Types/Types";
     import { useCreateProductStore } from "../../Components/Stores/ProductStore";
-    import { ProductService } from "../../Functions/Services/ProductService";
     import LoadingModal from "../../Components/Modal/LoadingModal.svelte";
+    import { createProductService } from "../../Functions/Services/ProductService";
 
     export let errors: { [key: string]: string };
     export let user: any;
@@ -20,7 +20,7 @@
         CreateObjectValidator.validate(store);
         if (!$store.hasError) {
             $store.isLoading = true;
-            await new ProductService(1000).post($store);
+            await createProductService().post($store);
             $store.isLoading = false;
         }
     }

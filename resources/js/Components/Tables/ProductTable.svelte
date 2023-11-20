@@ -11,14 +11,21 @@
     import { fade } from "svelte/transition";
     import { writable } from "svelte/store";
     import type { Product } from "../../Types/Types";
-    import { ProductService } from "../../Functions/Services/ProductService";
+    import {
+        type ProductService,
+        createProductService,
+    } from "../../Functions/Services/ProductService";
     import Paginator from "../Paginator.svelte";
 
     let sorting: any[] = [];
 
-    const service: ProductService = new ProductService(3000);
-    const serviceStore = service.getStore();
-    const serviceLoadingStore = service.getLoadingStore();
+    const service: ProductService = createProductService();
+    const serviceStore = service.store;
+    const serviceLoadingStore = service.loadingStore;
+
+    // We need to initialize the data as an empty array at the moment,
+    // because the object is not defined when the table tries to starts.
+    $serviceStore.data = [];
 
     const columns: ColumnDef<Product>[] = [
         {
@@ -50,9 +57,7 @@
     const table = createSvelteTable(options);
 
     async function updateTable(sort?: ColumnSort[]) {
-        await service.get({
-            sort,
-        });
+        await service.get();
     }
 
     function setSorting(updater: any) {
@@ -69,13 +74,11 @@
                 sorting,
             },
         };
-
-        // Update sorted value
-        updateTable($options.state?.sorting);
     }
 
-    // At start, load all the data.
-    updateTable();
+    $: $options.data = $serviceStore.data;
+
+    service.get();
 </script>
 
 <div class="p-8 h-full w-full">
