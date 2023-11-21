@@ -2,8 +2,7 @@
     import { Link } from "@inertiajs/svelte";
     import { GlobalAuthStore } from "../Components/Stores/AuthStore";
     import MainLayout from "../Layouts/MainLayout.svelte";
-    import { onMount } from "svelte";
-    import { createProductService } from "../Functions/Services/ProductService";
+    import { onMount} from "svelte";
 
     export let user: any;
 
@@ -11,21 +10,9 @@
 
     export let container: HTMLSpanElement;
 
-    const productService = createProductService();
-    const productServiceStore = productService.service.store;
-    const productServiceLoadingStore = productService.service.loadingStore;
-
-    let data: any = [];
-    let test = 1;
-
     const observer = new IntersectionObserver(
         (entries) => {
-            if (entries[0].isIntersecting) {
-                console.log($productServiceStore.next_page_url);
-                if ($productServiceStore.next_page_url) {
-                    productService.paginationService.getNextPage();
-                }
-            }
+            console.log(entries);
         },
         {
             rootMargin: "0px",
@@ -34,18 +21,8 @@
     );
 
     onMount(() => {
-        // Wait until the view is loaded.
-        productService.service.get();
+        observer.observe(container);
     });
-    $: if ($productServiceStore.current_page > 0) {
-        data = [...data, ...$productServiceStore.data];
-
-        if ($productServiceStore.next_page_url) {
-            console.log($productServiceStore.current_page);
-            observer.unobserve(container);
-            observer.observe(container);
-        }
-    }
 </script>
 
 <MainLayout>
@@ -75,15 +52,28 @@
                     </div>
                 </div>
             </div>
-            <div class="col-span-8 overflow-auto bg-gray-300">
-                <div class="p-8">
-                    <div class="p-4 bg-white rounded shadow relative">
-                        {#each data as test}
-                            <h1 class="bg-red-300 h-32">
-                                {test.name}
-                            </h1>
-                        {/each}
-                        <span bind:this={container} />
+            <div class="col-span-8">
+                <div>
+                    <div class="p-8 h-full w-full">
+                        <div
+                            class="p-4 bg-white rounded shadow relative h-full w-full overflow-auto"
+                        >
+                            <h1 class="bg-red-300 h-32">aoeuaoeu</h1>
+                            <h1 class="bg-blue-300 h-32">aoeuaoeu</h1>
+                            <h1 class="bg-red-300 h-32">aoeuaoeu</h1>
+                            <h1 class="bg-blue-300 h-32">aoeuaoeu</h1>
+                            <h1 class="bg-red-300 h-32">aoeuaoeu</h1>
+                            <h1 class="bg-blue-300 h-32">aoeuaoeu</h1>
+                            <h1 class="bg-red-300 h-32">aoeuaoeu</h1>
+                            <h1 class="bg-blue-300 h-32">aoeuaoeu</h1>
+                            <h1 class="bg-red-300 h-32">aoeuaoeu</h1>
+                            <h1 class="bg-blue-300 h-32">aoeuaoeu</h1>
+                            <h1 class="bg-red-300 h-32">aoeuaoeu</h1>
+                            <h1 class="bg-blue-300 h-32">aoeuaoeu</h1>
+                            <h1 class="bg-red-300 h-32">aoeuaoeu</h1>
+                            <h1 class="bg-blue-300 h-32">aoeuaoeu</h1>
+                            <span bind:this={container} />
+                        </div>
                     </div>
                 </div>
             </div>

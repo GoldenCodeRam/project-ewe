@@ -20,11 +20,11 @@ export type Pagination = {
     prev_page_url?: string;
 };
 
-export type Response<T> = {
+export type Response<T = any> = {
     data: T[];
 };
 
-export type PaginatedResponse<T = Object> = Response<T> & Pagination;
+export type PaginatedResponse<T = any> = Response<T> & Pagination;
 
 export type User = {
     name?: string;

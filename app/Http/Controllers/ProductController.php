@@ -37,7 +37,7 @@ class ProductController extends Controller
         // products.
         // TODO: This limit should be specified somewhere else, not
         // here.
-        return $query->paginate(10);
+        return $query->paginate(3);
     }
 
     /**

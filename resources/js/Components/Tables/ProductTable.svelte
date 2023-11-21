@@ -12,20 +12,15 @@
     import { writable } from "svelte/store";
     import type { Product } from "../../Types/Types";
     import {
-        type ProductService,
         createProductService,
     } from "../../Functions/Services/ProductService";
     import Paginator from "../Paginator.svelte";
 
     let sorting: any[] = [];
 
-    const service: ProductService = createProductService();
-    const serviceStore = service.store;
-    const serviceLoadingStore = service.loadingStore;
-
-    // We need to initialize the data as an empty array at the moment,
-    // because the object is not defined when the table tries to starts.
-    $serviceStore.data = [];
+    const productService = createProductService();
+    const serviceStore = productService.service.store;
+    const serviceLoadingStore = productService.service.loadingStore;
 
     const columns: ColumnDef<Product>[] = [
         {
@@ -44,9 +39,6 @@
     const options = writable<TableOptions<Product>>({
         data: $serviceStore.data,
         columns: columns,
-        state: {
-            sorting,
-        },
         onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
         manualSorting: true,
@@ -55,10 +47,6 @@
         debugTable: true,
     });
     const table = createSvelteTable(options);
-
-    async function updateTable(sort?: ColumnSort[]) {
-        await service.get();
-    }
 
     function setSorting(updater: any) {
         if (updater instanceof Function) {
@@ -74,11 +62,18 @@
                 sorting,
             },
         };
+
+        // Update ProductService sorting store and get the information.
+        productService.service.sortingStore.update((store) => {
+            store.sort = sorting;
+            return store;
+        });
+        productService.service.get();
     }
 
     $: $options.data = $serviceStore.data;
 
-    service.get();
+    productService.service.get();
 </script>
 
 <div class="p-8 h-full w-full">
@@ -95,123 +90,93 @@
             </div>
         {/if}
 
-        <h1 class="text-xl font-bold text-center">Lista de Productos</h1>
+        <!-- If the data is empty but it's not loading -->
+        {#if $serviceStore.data.length === 0 && !$serviceLoadingStore.isLoading}
+            <div
+                class="flex flex-col justify-center items-center h-full text-gray-400"
+            >
+                <i class="fa-solid fa-box-open text-8xl" />
+                <h1>Sin productos</h1>
+            </div>
+        {:else}
+            <h1 class="text-xl font-bold text-center">Lista de Productos</h1>
 
-        <table class="table-fixed border w-full">
-            <thead>
-                {#each $table.getHeaderGroups() as headerGroup}
-                    <tr>
-                        {#each headerGroup.headers as header}
-                            <th>
-                                {#if !header.isPlaceholder}
-                                    <div
-                                        class:cursor-pointer={header.column.getCanSort()}
-                                        class:select-none={header.column.getCanSort()}
-                                        on:click={header.column.getToggleSortingHandler()}
-                                        class="flex justify-center items-center"
-                                    >
+            <table class="table-fixed border w-full">
+                <thead>
+                    {#each $table.getHeaderGroups() as headerGroup}
+                        <tr>
+                            {#each headerGroup.headers as header}
+                                <th>
+                                    {#if !header.isPlaceholder}
+                                        <div
+                                            class:cursor-pointer={header.column.getCanSort()}
+                                            class:select-none={header.column.getCanSort()}
+                                            on:click={header.column.getToggleSortingHandler()}
+                                            class="flex justify-center items-center"
+                                        >
+                                            <svelte:component
+                                                this={flexRender(
+                                                    header.column.columnDef
+                                                        .header,
+                                                    header.getContext()
+                                                )}
+                                            />
+                                            {#if header.column
+                                                .getIsSorted()
+                                                .toString() === "asc"}
+                                                <i
+                                                    class="ms-2 fa-solid fa-sort-up"
+                                                />
+                                            {:else if header.column
+                                                .getIsSorted()
+                                                .toString() === "desc"}
+                                                <i
+                                                    class="ms-2 fa-solid fa-sort-down"
+                                                />
+                                            {/if}
+                                        </div>
+                                    {/if}
+                                </th>
+                            {/each}
+                        </tr>
+                    {/each}
+                </thead>
+                <tbody>
+                    {#each $table.getRowModel().rows as row}
+                        <tr>
+                            {#each row.getVisibleCells() as cell}
+                                <td>
+                                    <svelte:component
+                                        this={flexRender(
+                                            cell.column.columnDef.cell,
+                                            cell.getContext()
+                                        )}
+                                    />
+                                </td>
+                            {/each}
+                        </tr>
+                    {/each}
+                </tbody>
+                <tfoot>
+                    {#each $table.getFooterGroups() as footerGroup}
+                        <tr>
+                            {#each footerGroup.headers as header}
+                                <th>
+                                    {#if !header.isPlaceholder}
                                         <svelte:component
                                             this={flexRender(
-                                                header.column.columnDef.header,
+                                                header.column.columnDef.footer,
                                                 header.getContext()
                                             )}
                                         />
-                                        {#if header.column
-                                            .getIsSorted()
-                                            .toString() === "asc"}
-                                            <i
-                                                class="ms-2 fa-solid fa-sort-up"
-                                            />
-                                        {:else if header.column
-                                            .getIsSorted()
-                                            .toString() === "desc"}
-                                            <i
-                                                class="ms-2 fa-solid fa-sort-down"
-                                            />
-                                        {/if}
-                                    </div>
-                                {/if}
-                            </th>
-                        {/each}
-                    </tr>
-                {/each}
-            </thead>
-            <tbody>
-                {#each $table.getRowModel().rows as row}
-                    <tr>
-                        {#each row.getVisibleCells() as cell}
-                            <td>
-                                <svelte:component
-                                    this={flexRender(
-                                        cell.column.columnDef.cell,
-                                        cell.getContext()
-                                    )}
-                                />
-                            </td>
-                        {/each}
-                    </tr>
-                {/each}
-            </tbody>
-            <tfoot>
-                {#each $table.getFooterGroups() as footerGroup}
-                    <tr>
-                        {#each footerGroup.headers as header}
-                            <th>
-                                {#if !header.isPlaceholder}
-                                    <svelte:component
-                                        this={flexRender(
-                                            header.column.columnDef.footer,
-                                            header.getContext()
-                                        )}
-                                    />
-                                {/if}
-                            </th>
-                        {/each}
-                    </tr>
-                {/each}
-            </tfoot>
-        </table>
-
-        <div class="h-2" />
-        <div class="flex items-center gap-2">
-            <button
-                class="border rounded p-1"
-                on:click={() => $table.setPageIndex(0)}
-                disabled={!$table.getCanPreviousPage()}
-            >
-                {"<<"}
-            </button>
-            <button
-                class="border rounded p-1"
-                on:click={() => $table.previousPage()}
-                disabled={!$table.getCanPreviousPage()}
-            >
-                {"<"}
-            </button>
-            <button
-                class="border rounded p-1"
-                on:click={() => $table.nextPage()}
-                disabled={!$table.getCanNextPage()}
-            >
-                {">"}
-            </button>
-            <button
-                class="border rounded p-1"
-                on:click={() => $table.setPageIndex($table.getPageCount() - 1)}
-                disabled={!$table.getCanNextPage()}
-            >
-                {">>"}
-            </button>
-            <span class="flex items-center gap-1">
-                <div>Page</div>
-                <strong>
-                    {$table.getState().pagination.pageIndex + 1} of{" "}
-                    {$table.getPageCount()}
-                </strong>
-            </span>
-        </div>
-        <Paginator {service} />
-        <div>{$table.getRowModel().rows.length} Rows</div>
-        <pre>{JSON.stringify($table.getState().pagination, null, 2)}</pre>
+                                    {/if}
+                                </th>
+                            {/each}
+                        </tr>
+                    {/each}
+                </tfoot>
+            </table>
+            <Paginator service={productService.paginationService} />
+        {/if}
     </div>
 </div>
