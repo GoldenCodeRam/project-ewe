@@ -23,6 +23,7 @@ export class PaginationService<
             const response = await axios.get<T>(this.service.baseUrl, {
                 params: {
                     page: get(this.service.store).current_page + 1,
+                    sort: get(this.service.sortingStore).sort,
                 },
             });
 
@@ -35,6 +36,7 @@ export class PaginationService<
             const response = await axios.get<T>(this.service.baseUrl, {
                 params: {
                     page: get(this.service.store).current_page - 1,
+                    sort: get(this.service.sortingStore).sort,
                 },
             });
 
@@ -47,6 +49,7 @@ export class PaginationService<
             const response = await axios.get<T>(this.service.baseUrl, {
                 params: {
                     page: 1,
+                    sort: get(this.service.sortingStore).sort,
                 },
             });
 
@@ -60,6 +63,7 @@ export class PaginationService<
             const response = await axios.get<T>(this.service.baseUrl, {
                 params: {
                     page: Math.ceil(paginationData.total / paginationData.per_page),
+                    sort: get(this.service.sortingStore).sort,
                 },
             });
 
@@ -72,6 +76,7 @@ export class PaginationService<
             const response = await axios.get<T>(this.service.baseUrl, {
                 params: {
                     page,
+                    sort: get(this.service.sortingStore).sort,
                     ...options,
                 },
             });

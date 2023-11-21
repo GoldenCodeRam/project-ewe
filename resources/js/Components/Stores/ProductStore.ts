@@ -4,7 +4,6 @@ import type { CreateProductForm as CreateProductForm } from "../../Types/Types";
 
 export function useCreateProductStore(): Writable<CreateProductForm> {
     return writable<CreateProductForm>({
-        isLoading: false,
         hasError: false,
         fields: {
             name: {

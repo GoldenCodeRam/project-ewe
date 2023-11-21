@@ -16,12 +16,13 @@
 
     let store = useCreateProductStore();
 
+    let productService = createProductService();
+    let productLoadingService = productService.service.loadingStore;
+
     async function createObject() {
         CreateObjectValidator.validate(store);
         if (!$store.hasError) {
-            $store.isLoading = true;
-            await createProductService().post($store);
-            $store.isLoading = false;
+            productService.service.post($store);
         }
     }
 
@@ -29,7 +30,9 @@
 </script>
 
 <MainLayout>
-    <LoadingModal open={$store.isLoading}>Creando producto...</LoadingModal>
+    <LoadingModal open={$productLoadingService.isLoading}>
+        Creando producto...
+    </LoadingModal>
 
     <div class="container mx-auto p-4 max-w-xl h-full">
         <div class="bg-white px-6 py-4 rounded shadow">

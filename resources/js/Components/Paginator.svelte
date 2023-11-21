@@ -122,6 +122,9 @@ loaded, so don't render the paginator -->
                 </button>
             {/each}
         </div>
+        <p class="text-sm">
+            {$serviceStore.current_page} de {getTotalPages()}
+        </p>
         <button
             class="secondary-button-outline"
             class:disabled={!buttonStatus.next.enabled}

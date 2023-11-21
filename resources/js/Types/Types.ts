@@ -46,7 +46,6 @@ export type Product = {
 };
 
 export interface Form {
-    isLoading: boolean;
     hasError: boolean;
     fields: { [key: string]: Input };
 }
