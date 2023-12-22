@@ -1,5 +1,5 @@
 <script lang="ts">
-    import AuthDropdown from "./Dropdown/AuthDropdown.svelte";
+    import AuthDropdown from "../Dropdown/AuthDropdown.svelte";
 </script>
 
 <header class="shadow-sm z-10 border-b">

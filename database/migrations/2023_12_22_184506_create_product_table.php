@@ -10,16 +10,17 @@ return new class () extends Migration {
      */
     public function up(): void
     {
-        Schema::create('user', function (Blueprint $table) {
-            // Generate a new default UUID if it's not provided.
+        Schema::create('product', function (Blueprint $table) {
             $table->id();
             $table->uuid()->unique();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->string("name");
+            $table->float("value");
             $table->timestamps();
+
+            $table->foreignId("product_category_id")->constrained(
+                table: "product_category",
+                indexName: "id",
+            );
         });
     }
 
@@ -28,6 +29,6 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('user');
+        Schema::dropIfExists('product');
     }
 };

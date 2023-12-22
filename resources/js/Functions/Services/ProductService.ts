@@ -11,7 +11,6 @@ export function createProductService() {
             total: 0,
             data: [],
         }),
-        3000
     );
 
     const paginationService = new PaginationService(service);

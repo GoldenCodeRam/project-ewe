@@ -54,7 +54,7 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         Product::create($request->all());
-        return redirect(status: 202)->route("Home");
+        return redirect(status: 202)->back();
     }
 
     /**
