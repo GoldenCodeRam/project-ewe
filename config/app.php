@@ -187,4 +187,12 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+
+    /*
+     * Default pagination amount for the models when returning information.
+     * By default the app is paginating all responses, as it's better when there
+     * is a lot of information.
+     */
+    'pagination_default_amount' => 20,
+
 ];

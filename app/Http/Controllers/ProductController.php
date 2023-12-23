@@ -15,7 +15,9 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $query = DB::table(Product::TABLE_NAME);
+        $query = Product::query();
+        $query->with("category");
+
         $parameters = $request->query->all();
 
         foreach($parameters as $key => $value) {
@@ -35,9 +37,7 @@ class ProductController extends Controller
 
         // If the query doesn't has any other parameter, return all the
         // products.
-        // TODO: This limit should be specified somewhere else, not
-        // here.
-        return $query->paginate(20);
+        return $query->paginate(config('pagination_default_amount', 20));
     }
 
     /**
@@ -60,9 +60,12 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show(string $uuid): Product | null
     {
-        //
+        return Product::query()
+            ->where("uuid", $uuid)
+            ->with("category")
+            ->first();
     }
 
     /**
