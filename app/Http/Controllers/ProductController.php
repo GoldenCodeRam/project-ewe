@@ -65,6 +65,7 @@ class ProductController extends Controller
         return Product::query()
             ->where("uuid", $uuid)
             ->with("category")
+            ->with("images")
             ->first();
     }
 
