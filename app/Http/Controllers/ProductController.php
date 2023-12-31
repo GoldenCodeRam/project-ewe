@@ -17,6 +17,7 @@ class ProductController extends Controller
     {
         $query = Product::query();
         $query->with("category");
+        $query->with("images");
 
         $parameters = $request->query->all();
 
@@ -32,6 +33,10 @@ class ProductController extends Controller
                             filter_var($sorting["desc"], FILTER_VALIDATE_BOOLEAN) ? "desc" : "asc"
                         );
                     }
+                    break;
+                case "category":
+                    $query->where("product_category_id", $value);
+                    break;
             }
         }
 

@@ -7,7 +7,7 @@
 <button
     on:click
     {...buttonProps}
-    class="bg-white px-2 py-1 font-bold uppercase text-xs text-slate-500 rounded active:bg-gray-300 hover:bg-gray-100"
+    class="bg-white px-4 py-2 font-bold uppercase text-xs text-slate-600 rounded active:bg-gray-300 hover:bg-gray-100"
 >
     <slot />
 </button>

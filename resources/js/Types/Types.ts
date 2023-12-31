@@ -41,9 +41,22 @@ export type Auth = {
 };
 
 export type Product = {
+    uuid: string;
     name: string;
     value: number;
+    category: Category;
+    images: Image[];
 };
+
+export type Category = {
+    id: number;
+    name: string;
+}
+
+export type Image = {
+    id: number;
+    url: string;
+}
 
 export interface Form {
     hasError: boolean;

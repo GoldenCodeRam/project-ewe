@@ -15,8 +15,7 @@ class ProductCategoryController extends Controller
      */
     public function index(): LengthAwarePaginator
     {
-        $query = ProductCategory::query();
-        return $query->paginate(config('pagination_default_amount', 20));
+        return ProductCategory::query()->paginate(config('pagination_default_amount', 20));
     }
 
     /**
@@ -33,23 +32,9 @@ class ProductCategoryController extends Controller
      *
      * @return array<string,mixed>
      */
-    public function show(string $id): array
+    public function show(string $id): ProductCategory
     {
-        /**
-         * @var ProductCategory
-         */
-        $productCategory = ProductCategory::query()
-            ->where("id", $id)
-            ->first();
-
-        // TODO: This might have to change in the future, as we might not want
-        // to return every time the products of the category when requested.
-        return [
-            "product_category" => $productCategory,
-            "products" => $productCategory
-                ->products()
-                ->paginate(config("pagination_default_amount", 20)),
-        ];
+        return ProductCategory::find($id);
     }
 
     /**
