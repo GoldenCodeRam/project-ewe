@@ -10,6 +10,10 @@ export function toInputErrors(errorObject: {
     return result;
 }
 
+export type ProductCategory = {
+    name: string;
+};
+
 // This type comes from the pagination information returned by Laravel, that's
 // why the variables have these names.
 export type Pagination = {
@@ -51,12 +55,12 @@ export type Product = {
 export type Category = {
     id: number;
     name: string;
-}
+};
 
 export type Image = {
     id: number;
     url: string;
-}
+};
 
 export interface Form {
     hasError: boolean;

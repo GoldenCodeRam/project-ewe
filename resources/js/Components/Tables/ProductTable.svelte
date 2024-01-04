@@ -11,12 +11,11 @@
     import { fade } from "svelte/transition";
     import { writable } from "svelte/store";
     import type { Product } from "../../Types/Types";
-    import { createProductService } from "../../Functions/Services/ProductService";
     import Paginator from "../Paginator.svelte";
 
     let sorting: any[] = [];
 
-    const productService = createProductService();
+    const productService = null;
     const serviceStore = productService.service.store;
     const serviceLoadingStore = productService.service.loadingStore;
 

@@ -9,7 +9,7 @@
                 <img src="/img/logo.svg" class="w-12 h-auto" alt="Logo" />
             </a>
             <div>
-                <LinkButton>Ingresar</LinkButton>
+                <LinkButton>Log in</LinkButton>
             </div>
         </div>
     </div>

@@ -7,7 +7,6 @@
     import { toInputErrors } from "../../Types/Types";
     import { useCreateProductStore } from "../../Components/Stores/ProductStore";
     import LoadingModal from "../../Components/Modal/LoadingModal.svelte";
-    import { createProductService } from "../../Functions/Services/ProductService";
 
     export let errors: { [key: string]: string };
     export let user: any;
@@ -16,7 +15,7 @@
 
     let store = useCreateProductStore();
 
-    let productService = createProductService();
+    let productService = null;
     let productLoadingService = productService.service.loadingStore;
 
     async function createObject() {

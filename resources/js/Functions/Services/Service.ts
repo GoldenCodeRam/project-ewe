@@ -1,10 +1,7 @@
 import type { ColumnSort } from "@tanstack/svelte-table";
 import axios from "axios";
 import { type Writable, writable, get } from "svelte/store";
-import {
-    type Form,
-    type PaginatedResponse,
-} from "../../Types/Types";
+import { type Form, type PaginatedResponse } from "../../Types/Types";
 
 export class Service<T> {
     constructor(
@@ -12,7 +9,7 @@ export class Service<T> {
         public route: string,
         public timeout: number = 0,
         private loadingStore: Writable<boolean> = writable(false),
-    ) { }
+    ) {}
 
     // TODO: Find an use for this, as at the moment it's not used anywhere.
     public sortingStore: Writable<{ sort: ColumnSort[] }> = writable({
@@ -52,7 +49,7 @@ export class Service<T> {
 }
 
 export interface FindAllAction<T extends PaginatedResponse> {
-    findAll(serviceStore: Service<T>): void;
+    findAll(serviceStore: Service<T>, params?: any[]): Promise<void>;
 }
 
 export interface FindOneAction<T> {
@@ -106,7 +103,9 @@ export class PaginatedService<T extends PaginatedResponse> extends Service<T> {
             const paginationData = get(this.store);
             const response = await axios.get<T>(this.route, {
                 params: {
-                    page: Math.ceil(paginationData.total / paginationData.per_page),
+                    page: Math.ceil(
+                        paginationData.total / paginationData.per_page,
+                    ),
                     sort: get(this.sortingStore).sort,
                 },
             });
@@ -129,7 +128,4 @@ export class PaginatedService<T extends PaginatedResponse> extends Service<T> {
             this.store.set(response.data);
         });
     }
-}
-
-export class PaginatedServiceStore<T extends PaginatedResponse> extends ServiceStore<T> {
 }

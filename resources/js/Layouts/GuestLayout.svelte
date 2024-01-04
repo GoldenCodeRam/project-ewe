@@ -5,7 +5,7 @@
 
 <main class="h-full w-full flex flex-col">
     <GuestHeader />
-    <article class="flex-1 bg-slate-200 min-h-full">
+    <article class="flex-1 bg-slate-200">
         <slot />
     </article>
     <MainFooter />
