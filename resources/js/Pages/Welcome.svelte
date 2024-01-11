@@ -53,7 +53,7 @@
             hardcoded.
             -->
             <div>
-                {#each $store.data.slice(0, 4) as category}
+                {#each $store.data.slice(0, 1) as category}
                     <ProductCategoryCarousel {category} />
                 {/each}
             </div>

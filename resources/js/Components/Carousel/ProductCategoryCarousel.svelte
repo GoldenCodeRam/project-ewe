@@ -23,8 +23,9 @@
 
     function renderCarousel(node: HTMLDivElement) {
         new Glide(node, {
-            type: "carousel",
+            type: "slider",
             perView: 4,
+            startAt: 5 / 2,
             gap: 20,
             focusAt: "center",
             breakpoints: {
